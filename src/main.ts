@@ -1,4 +1,4 @@
-import mainmenu from './menus/main';
+// import mainmenu from './menus/main';
 import settings from './menus/setting';
 import { init, DocumentWithEventListeners } from './scripts/savelisteners';
 

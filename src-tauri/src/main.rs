@@ -4,6 +4,8 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::Result;
 
+static CONFIG_FILL: [&str; 3] = ["0","0","0"];
+
 fn main() {
   match create_settings() {
    Ok(_) => println!("Created config.txt"),
@@ -13,10 +15,11 @@ fn main() {
 }
 
 fn create_settings() -> Result<()> {
+    let config_fill = CONFIG_FILL;
     let mut file = File::create("config.txt")?;
     file.write_all(b"")?;
-    writeln!(file, "jes")?;
-    writeln!(file, "jes")?;
-    writeln!(file, "jes")?;
+    for set in config_fill {
+      writeln!(file, "{}", set)?;
+    }
     Ok(())
 }

@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Pixelify Sans';
-  src: URL('assets/PixelifySans-VariableFont_wght.ttf') format('truetype');
+  src: url('./assets/PixelifySans.ttf') format('truetype');
 }
 
 #game {

@@ -88,7 +88,7 @@ export default function settings(menu: HTMLElement){
     
 
     const settings = menu.getElementsByTagName("settings")[0];
-    const explain = menu.getElementsByTagName("explain")[0];
+    // const explain = menu.getElementsByTagName("explain")[0];
     
     game();
     

@@ -1,9 +1,9 @@
 {
   "productName": "fnab",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "mckpl.fnab.game",
   "build": {
-    "frontendDist": "../src",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:1420/",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
