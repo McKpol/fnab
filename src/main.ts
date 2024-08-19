@@ -1,5 +1,8 @@
-import { mainmenu } from './menu';
+import mainmenu from './menus/main';
+import settings from './menus/setting';
+import { init, DocumentWithEventListeners } from './scripts/savelisteners';
 
+init();
 let game: HTMLElement = document.getElementById("game")!;
 let menu: HTMLElement = document.getElementById("menu")!;
 
@@ -15,13 +18,13 @@ function getScale(){
 function gameResize(){
   game.style.scale = getScale().toString();
   game.style.transform = `translate(${-50 / getScale()}%, ${-50 / getScale()}%)`;
+  console.log((document as DocumentWithEventListeners).eventListeners)
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  mainmenu(menu);
+  settings(menu);
   gameResize();
     window.addEventListener("resize", ()=>{
       gameResize();
     })
 });
-

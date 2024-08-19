@@ -1,20 +1,31 @@
 import { exit } from '@tauri-apps/plugin-process';
+import settings from './setting';
+import { removeAllEventListeners } from '../scripts/savelisteners';
 
-export function mainmenu(menu: HTMLElement){
-
+export default function mainmenu(menu: HTMLElement){
+    removeAllEventListeners();
+    menu.textContent = "";
     menu.insertAdjacentHTML('beforeend', /*html*/`
         <style>
             .selected{
                 background-color: #ffffff40
             }
+            .btn{
+                transition-property: background;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+                transition-duration: 75ms;
+                padding: 4px;
+                padding-left: 8px;
+                padding-right: 8px;
+            }
         </style>
         <all class="flex flex-col absolute w-full h-full">
-        <titlegame class="absolute left-1/2 text-[60px] -translate-x-1/2 top-[15%] font-black pixelify-sans text-nowrap">Brateq the game</titlegame>
-        <buttons id="buttons" class="flex flex-col absolute left-1/2 -translate-x-1/2 top-1/2 font-black pixelify-sans text-2xl text-center cursor-pointer">
-            <play class="transition-all duration-75 p-1 px-2">NOWA GRA</play>
-            <continue class="transition-all duration-75 p-1 px-2 opacity-50 cursor-default">KONTYNUUJ</continue>
-            <settings class="transition-all duration-75 p-1 px-2">USTAWIENIA</settings>
-            <quit class="transition-all duration-75 p-1 px-2">WYJŚCIE</quit>
+        <titlegame class="absolute left-1/2 text-[60px] -translate-x-1/2 top-[15%] font-black text-nowrap">Brateq the game</titlegame>
+        <buttons id="buttons" class="flex flex-col absolute left-1/2 -translate-x-1/2 top-1/2 font-black text-2xl text-center cursor-pointer">
+            <play class="btn">NOWA GRA</play>
+            <continue class="btn opacity-50 cursor-default">KONTYNUUJ</continue>
+            <settings class="btn">USTAWIENIA</settings>
+            <quit class="btn">WYJŚCIE</quit>
         </buttons>
         </all>
 `)
@@ -85,5 +96,7 @@ buttons?.getElementsByTagName("quit")[0]?.addEventListener("mousedown",async ()=
     await exit(1);
 })
 
+buttons?.getElementsByTagName("settings")[0].addEventListener("mousedown",()=>{
+    settings(menu);
+})
 }
-

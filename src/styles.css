@@ -7,10 +7,6 @@
   src: URL('assets/PixelifySans-VariableFont_wght.ttf') format('truetype');
 }
 
-.pixelify-sans{
-  font-family: "Pixelify Sans";
-}
-
 #game {
   width: 960px; 
   height: 540px; 
@@ -26,7 +22,7 @@
 }
 
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Pixelify Sans;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
