@@ -1,5 +1,6 @@
 import { removeAllEventListeners } from "../scripts/savelisteners";
 import mainmenu from "./main";
+import { invoke } from "@tauri-apps/api/core";
 
 export default function settings(menu: HTMLElement){
     removeAllEventListeners();
@@ -96,7 +97,7 @@ export default function settings(menu: HTMLElement){
         game();
     })
 
-    function game(){
+    async function game(){
         removeAllEventListeners();
         settings.textContent = "";
         settings.insertAdjacentHTML('beforeend', /*html*/`
@@ -127,9 +128,9 @@ export default function settings(menu: HTMLElement){
                 }
             </style>
 
-        <difficulty class="set"><text class="flex-none">Poziom Trudności</text><t class="t" >NORMALNY</t></difficulty>
-        <mousecamera class="set"><text class="flex-none">Ruch kamery myszką</text><t class="t" >WŁĄCZONY</t></mousecamera>
-        <movecamera class="set"><text class="flex-none">Ruch kamery poprzez ruch</text><t class="t" >WŁĄCZONY</t></movecamera>
+        <difficulty class="set"><text class="flex-none">Poziom Trudności</text><t class="t" >Reading...</t></difficulty>
+        <mousecamera class="set"><text class="flex-none">Ruch kamery myszką</text><t class="t" >Reading...</t></mousecamera>
+        <movecamera class="set"><text class="flex-none">Ruch kamery poprzez ruch</text><t class="t" >Reading...</t></movecamera>
         `)
         
         selected = [
@@ -141,15 +142,39 @@ export default function settings(menu: HTMLElement){
 
         act = [
             [game, null, null],
-            [function(){difficulty = changeName(["PIEKŁOO", "NORMALNY", "ŁATWY"], difficulty, setting("difficulty"));
+            [async function(){difficulty = changeName(["🔥PIEKŁOO🔥", "NORMALNY", "ŁATWY"], difficulty, setting("difficulty"));
+                invoke("write_file",
+                    {line: 0, content: String(difficulty), which: 0}
+                )
                 if (difficulty == 0){
                     setting("difficulty").style.color = "red";
                 } else {
                     setting("difficulty").style.color = "";
                 }}],
-            [function(){mousecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], mousecamera, setting("mousecamera"));}],
-            [function(){movecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], movecamera, setting("movecamera"));}]
+            [async function(){mousecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], mousecamera, setting("mousecamera"));
+                invoke("write_file",
+                    {line: 1, content: String(mousecamera), which: 0}
+                )
+            }],
+            [async function(){movecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], movecamera, setting("movecamera"));
+                invoke("write_file",
+                    {line: 2, content: String(movecamera), which: 0}
+                )
+            }]
         ]
+
+        let difficulty = Number(await invoke("read_file", {line: 0, which: 0}));
+        let mousecamera = Number(await invoke("read_file", {line: 1, which: 0}));
+        let movecamera = Number(await invoke("read_file", {line: 2, which: 0}));
+
+        setting("difficulty").getElementsByClassName("t")[0].textContent = ["🔥PIEKŁOO🔥", "NORMALNY", "ŁATWY"][difficulty];
+        if (difficulty == 0){
+            setting("difficulty").style.color = "red";
+        } else {
+            setting("difficulty").style.color = "";
+        }
+        setting("mousecamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"][mousecamera];
+        setting("movecamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"][movecamera];
 
         for(let y = 1; y < selected.length; y++){
             for (let x = 0; x < selected[y].length; x++){
@@ -161,10 +186,6 @@ export default function settings(menu: HTMLElement){
                 })
             }
         }
-
-        let difficulty = 1;
-        let mousecamera = 1;
-        let movecamera = 1;
 
         function changeName(list: string[], set: number, element: Element){
             if (set + 1 < list.length){
@@ -181,23 +202,18 @@ export default function settings(menu: HTMLElement){
             return settings.getElementsByTagName(name)[0] as HTMLElement
         }
 
-        
-        setting("difficulty").addEventListener("mousedown", ()=>{
-            difficulty = changeName(["PIEKŁOO", "NORMALNY", "ŁATWY"], difficulty, setting("difficulty"));
-            if (difficulty == 0){
-                setting("difficulty").style.color = "red";
-            } else {
-                setting("difficulty").style.color = "";
+        for (let y = 1; y < selected.length; y++){
+            if (y != 0){
+                for (let x = 0; x < selected[y].length; x++){
+                    const fnc = act[y][x];
+                    const element = selected[y][x];
+                    if (fnc != null){
+                        element.addEventListener("mousedown", ()=>fnc())
+                    }
+                    x++;
+                }
             }
-        })
-
-        setting("mousecamera").addEventListener("mousedown", ()=>{
-            mousecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], mousecamera, setting("mousecamera"));
-        })
-
-        setting("movecamera").addEventListener("mousedown", ()=>{
-            movecamera = changeName(["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"], movecamera, setting("movecamera"));
-        })
+        }
     
         document.addEventListener("keydown",(e)=>{
             if(e.key == "Escape"){
