@@ -1,6 +1,11 @@
-# Tauri + Vanilla TS
 
-This template should help get you started developing with Tauri in vanilla HTML, CSS and Typescript.
+# Unititled game Brateq
+Game created in VITE + TS (FrontEnd)
+Generating executable in Tauri + Rust
+
+## Authors
+
+- [@McKpl (github)](https://www.github.com/McKpol)
 
 ## Recommended IDE Setup
 
