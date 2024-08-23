@@ -8,12 +8,13 @@ export default function mainmenu(menu: HTMLElement){
     menu.insertAdjacentHTML('beforeend', /*html*/`
         <style>
             .selected{
-                background-color: #ffffff40
+                letter-spacing: 20px;
+                color: yellow;
             }
             .btn{
-                transition-property: background;
+                transition-property: all;
                 transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-                transition-duration: 75ms;
+                transition-duration: 150ms;
                 padding: 4px;
                 padding-left: 8px;
                 padding-right: 8px;
