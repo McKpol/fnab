@@ -26,7 +26,7 @@ export default function settings(menu: HTMLElement){
                 <gameaudio class="btn">AUDIO</gameaudio>
             </topbar>
             <content class="flex flex-row w-full h-full">
-                <settings class="h-full w-full flex flex-col overflow-y-scroll pt-6">
+                <settings class="h-full w-full flex flex-col overflow-y-hidden pt-6">
                 </settings>
                 <explain class="bg-slate-50/50 w-full h-full">
                 </explain>
