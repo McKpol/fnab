@@ -222,6 +222,7 @@ export default function settings(menu: HTMLElement){
             }
             const key = checkSelected();
             if (key != null){
+                console.log(e.key);
                 if(e.key == "Enter"){
                     const actn = act[key[0]][key[1]]
                     if (actn != null){
@@ -229,19 +230,19 @@ export default function settings(menu: HTMLElement){
                     }
                     return
                 }
-                if(e.key.toLowerCase() == "w" && key[0] - 1 >= 0){
+                if((e.key.toLowerCase() == "w" || e.key == "ArrowUp") && key[0] - 1 >= 0){
                     changeSelected(key[0] - 1, key[1])
                     return
                 }
-                if(e.key.toLowerCase() == "s" && key[0] + 1 <= selected.length - 1){
+                if(e.key.toLowerCase() == "s" || e.key == "ArrowDown" && key[0] + 1 <= selected.length - 1){
                     changeSelected(key[0] + 1, key[1])
                     return
                 }
-                if(e.key.toLowerCase() == "a" && key[1] - 1 >= 0){
+                if(e.key.toLowerCase() == "a" || e.key == "ArrowLeft" && key[1] - 1 >= 0){
                     changeSelected(key[0], key[1] - 1)
                     return
                 }
-                if(e.key.toLowerCase() == "d" && key[1] + 1 <= selected[key[0]].length - 1){
+                if(e.key.toLowerCase() == "d" || e.key == "ArrowRight" && key[1] + 1 <= selected[key[0]].length - 1){
                     changeSelected(key[0], key[1] + 1)
                     return
                 }
