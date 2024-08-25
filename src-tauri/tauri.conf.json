@@ -11,13 +11,14 @@
   "app": {
     "windows": [
       {
+        "label": "Main",
         "title": "Brateq the game",
         "width": 960,
         "height": 540,
         "resizable": true,
         "fullscreen": false,
         "focus": false
-      }
+}
     ],
     "security": {
       "csp": null

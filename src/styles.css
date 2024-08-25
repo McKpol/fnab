@@ -19,6 +19,7 @@
   border: solid 2px white;
   user-select: none;
   cursor: default;
+  overflow: hidden;
 }
 
 :root {

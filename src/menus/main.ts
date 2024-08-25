@@ -1,6 +1,7 @@
 import { exit } from '@tauri-apps/plugin-process';
 import settings from './setting';
 import { removeAllEventListeners } from '../scripts/savelisteners';
+import { getMouse } from '../scripts/scripts';
 
 export default function mainmenu(menu: HTMLElement){
     removeAllEventListeners();
@@ -30,6 +31,13 @@ export default function mainmenu(menu: HTMLElement){
         </buttons>
         </all>
 `)
+
+document.addEventListener("mousemove", (e)=>{
+    console.log("mousemove");
+    const MousePosition = getMouse(e);
+    menu.style.transform = `translate(${MousePosition[0]/-25}px, ${MousePosition[1]/-25}px)`   
+    console.log(MousePosition)
+})
 
 const buttons = document.getElementById("buttons");
 const selected = [buttons?.getElementsByTagName("play")[0],buttons?.getElementsByTagName("settings")[0],buttons?.getElementsByTagName("quit")[0]];
