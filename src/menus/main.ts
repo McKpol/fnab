@@ -102,7 +102,7 @@ for(let i = 0; i < selected.length; i++){
  // Action buttons
 buttons?.getElementsByTagName("quit")[0]?.addEventListener("mousedown",async ()=>{
     console.log("quit")
-    await exit(1);
+    await exit(0);
 })
 
 buttons?.getElementsByTagName("settings")[0].addEventListener("mousedown",()=>{

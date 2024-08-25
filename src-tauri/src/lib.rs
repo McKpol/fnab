@@ -1,10 +1,8 @@
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 
-use std::fs;
-use std::fs::{OpenOptions};
+use std::fs::{self, OpenOptions};
 use std::io::{self, SeekFrom, prelude::*, Result};
 use std::path::Path;
-use tauri::window::Window;
 
 static CONFIG_FILL: [[&str; 3]; 1] = [["0","0","0"]];
 static FILENAME: [& str; 1] = ["configfile"];
