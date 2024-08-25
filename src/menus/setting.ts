@@ -1,8 +1,9 @@
 import { removeAllEventListeners } from "../scripts/savelisteners";
 import mainmenu from "./main";
 import { invoke } from "@tauri-apps/api/core";
+import { checkSelected, changeSelected, reloadset } from "../scripts/menus";
 
-export default function settings(menu: HTMLElement){
+export default function settings(menu: HTMLElement, type: number = 0){
     removeAllEventListeners();
     menu.textContent = "";
     menu.insertAdjacentHTML('beforeend', /*html*/`
@@ -35,57 +36,12 @@ export default function settings(menu: HTMLElement){
         </all>
 `)
 
-    let selected = [
-        [menu.getElementsByTagName("gameset")[0], menu.getElementsByTagName("gamecontrol")[0], menu.getElementsByTagName("gameaudio")[0]]
-    ]
-    let act = [
-        [game, null, null],
-    ]
-
-    function changeSelected(numbery: number | null = null, numberx: number | null = null, list: Element[][] = selected){
-        for(const selectedd of list){
-            for (const element of selectedd){
-                element?.classList.remove("selected");  
-            }
-        }
-        if (numberx == null){
-            numberx = 0;
-        }
-        console.log(numbery, list)
-        if(numbery != null){
-            if (list[numbery].length - 1 < numberx){
-                numberx = 0;
-            }
-            list[numbery][numberx].classList.add("selected")
-        }
-    }
-
-    function checkSelected(list: Element[][] = selected): number[] | null{
-        let y = 0;
-        let x = 0;
-        for(const selectedd of list){
-            for(const element of selectedd){
-                if(element?.classList.contains("selected")){
-                    return [y, x];
-                }
-                x += 1;
-            }
-            y += 1;
-            x = 0;
-        }
-        return null;
-    }
-
-    for(let y = 0; y < selected.length; y++){
-        for (let x = 0; x < selected[y].length; x++){
-            const element = selected[y][x];
-            element?.addEventListener("mousemove", ()=>{
-                if (!(element.classList.contains("selected"))){
-                    changeSelected(y, x);
-                }
-            })
-        }
-    }
+    // let selected = [
+    //     [menu.getElementsByTagName("gameset")[0], menu.getElementsByTagName("gamecontrol")[0], menu.getElementsByTagName("gameaudio")[0]]
+    // ]
+    // let act = [
+    //     [game, null, null],
+    // ]
 
     const settings = menu.getElementsByTagName("settings")[0];
     // const explain = menu.getElementsByTagName("explain")[0];
@@ -105,19 +61,19 @@ export default function settings(menu: HTMLElement){
         return settings.getElementsByTagName(name)[0] as HTMLElement
     }
 
-    game();
+    if (type == 0){
+        game()
+    }
     
     menu.getElementsByTagName("gameset")[0].addEventListener("mousedown",()=>{
-        game();
+        reloadset(menu, 0);
     })
-    
 
     async function skeleton(HTML: string, fncselected: Function, act:(Function | null)[][]){
         removeAllEventListeners();
         settings.textContent = "";
         settings.insertAdjacentHTML('beforeend', `${HTML}`);
         const selected: Element[][] = fncselected();
-        console.log(selected);
         for(let y = 1; y < selected.length; y++){
             for (let x = 0; x < selected[y].length; x++){
                 const element = selected[y][x];
@@ -128,6 +84,14 @@ export default function settings(menu: HTMLElement){
                 })
             }
         }
+
+        selected[0].forEach((element, i) => {
+            element.addEventListener("mousemove", ()=>{
+                if (element.classList.contains("selected")) {
+                    changeSelected(0, i, selected);
+                }
+            });
+        });
 
         for (let y = 1; y < selected.length; y++){
             if (y != 0){
@@ -148,7 +112,6 @@ export default function settings(menu: HTMLElement){
             }
             const key = checkSelected(selected);
             if (key != null){
-                console.log(e.key);
                 if(e.key == "Enter"){
                     const actn = act[key[0]][key[1]]
                     if (actn != null){

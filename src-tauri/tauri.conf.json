@@ -4,7 +4,7 @@
   "identifier": "mckpl.fnab.game",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:1420/",
+    "devUrl": "http://localhost:4000/",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
