@@ -1,5 +1,4 @@
 export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: Element[][]){
-    console.log(numberx);
     console.log(list);
     for(const selectedd of list){
         for (const element of selectedd){

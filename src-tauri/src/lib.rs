@@ -4,7 +4,7 @@ use std::fs::{self, OpenOptions};
 use std::io::{self, SeekFrom, prelude::*, Result};
 use std::path::Path;
 
-static CONFIG_FILL: [[&str; 3]; 1] = [["0","0","0"]];
+static CONFIG_FILL: [[&str; 4]; 1] = [["0","0","0","0"]];
 static FILENAME: [& str; 1] = ["configfile"];
 
 fn create_files() -> Result<()> {
