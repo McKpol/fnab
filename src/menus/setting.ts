@@ -51,9 +51,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 <gameaudio class="btn">AUDIO</gameaudio>
             </topbar>
             <content class="flex flex-row w-full h-full">
-                <settings class="h-full w-full flex flex-col overflow-y-hidden pt-6">
+                <settings class="h-full w-full flex flex-col overflow-y-hidden pt-6 border-r-2 border-white">
                 </settings>
-                <explain class="bg-slate-50/50 w-full h-full">
+                <explain class="w-full h-full border-white border-t-2">
+                <t class="m-2">Ustawia josdosokdkjnjdj lsafdj laddfda lja nfddnfnuibnbczuivncxpnvxon  oixjv nonicxv  o zcv czvnoicz vnoipc zvnienwreaw ea wj</t>
                 </explain>
             </content>
             <esc class="absolute bottom-0 ml-1 opacity-50 text-lg">[ESC] - WRÓĆ </esc>
@@ -64,7 +65,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
     let topbaract: (Function | null)[] = [async function(){reloadset(menu, 0)}, async function(){reloadset(menu, 1)}, null];
 
     const settings = menu.getElementsByTagName("settings")[0];
-    // const explain = menu.getElementsByTagName("explain")[0];
+    const explain = menu.getElementsByTagName("explain")[0];
 
     function changeName(list: string[], set: number, element: Element){
         if (set + 1 < list.length){
@@ -106,7 +107,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
         reloadset(menu, 1);
     })
 
-    async function skeleton(HTML: string, fncselected: Function, act:(Function | null)[][], start: number){
+    function skeleton(HTML: string, fncselected: Function, act:(Function | null)[][], hover: (Function | null)[][], start: number){
         removeAllEventListeners();
         settings.textContent = "";
         settings.insertAdjacentHTML('beforeend', `${HTML}`);
@@ -117,6 +118,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 element?.addEventListener("mousemove", ()=>{
                     if (!(element.classList.contains("selected"))){
                         changeSelected(y, x, selected);
+                        const hoveract = hover[y][x];
+                        if (hoveract != null){
+                            hoveract()
+                        }
                     }
                 })
             }
@@ -141,6 +146,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
             }
             const key = checkSelected(selected);
             if (key != null){
+                const hoveract = hover[key[0]][key[1]]
+                if (hoveract) {
+                    hoveract()
+                }
                 if(e.key == "Enter"){
                     const actn = act[key[0]][key[1]]
                     if (actn != null){
@@ -214,7 +223,12 @@ export default function settings(menu: HTMLElement, type: number = 0){
                     {line: 3, content: String(value[3]), which: 0}
                 )
             }]
-        ], 1
+        ],
+        [
+            [null, null, null],
+            [function(){}]
+        ],
+        1
     )
     const selected = selectedfnc();
 
@@ -251,6 +265,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
         [
             topbaract,
             [async function(){console.log("Test")}]
+        ],
+        [
+            [null, null, null],
+            [function(){}]
         ], 1
     )
 
