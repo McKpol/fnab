@@ -120,12 +120,6 @@ export default function settings(menu: HTMLElement, type: number = 0){
                         changeSelected(y, x, selected);
                     }
                 })
-                element?.addEventListener("mouseenter",()=>{
-                    const hoveract = hover[y][x];
-                    if (hoveract != null){
-                        hoveract()
-                    }
-                })
             }
         }
 
@@ -134,6 +128,11 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 for (let x = 0; x < selected[y].length; x++){
                     const fnc = act[y][x];
                     const element = selected[y][x];
+                    const hoveract = hover[y][x];                
+
+                    if (hoveract != null){
+                        element?.addEventListener("mouseenter",()=>hoveract())
+                    }
                     if (fnc != null){
                         element.addEventListener("mousedown", ()=>fnc())
                     }
@@ -142,16 +141,20 @@ export default function settings(menu: HTMLElement, type: number = 0){
             }
         }
         document.addEventListener("keydown",(e)=>{
-            if(e.key == "Escape"){
-                mainmenu(menu);
-                return
-            }
-            const key = checkSelected(selected);
-            if (key != null){
+
+            function hoveract(key: [number,number]){
                 const hoveract = hover[key[0]][key[1]]
                 if (hoveract) {
                     hoveract()
                 }
+            }
+
+            if(e.key == "Escape"){
+                mainmenu(menu);
+                return
+            }
+            let key = checkSelected(selected);
+            if (key != null){
                 if(e.key == "Enter"){
                     const actn = act[key[0]][key[1]]
                     if (actn != null){
@@ -161,26 +164,27 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 }
                 if((e.key.toLowerCase() == "w" || e.key == "ArrowUp") && key[0] - 1 >= 0){
                     changeSelected(key[0] - 1, key[1], selected)
-                    return
-                }
+                } else
                 if((e.key.toLowerCase() == "s" || e.key == "ArrowDown") && key[0] + 1 <= selected.length - 1){
                     changeSelected(key[0] + 1, key[1], selected)
-                    return
-                }
+                } else
                 if((e.key.toLowerCase() == "a" || e.key == "ArrowLeft") && key[1] - 1 >= 0){
                     changeSelected(key[0], key[1] - 1, selected)
-                    return
-                }
+                } else
                 if((e.key.toLowerCase() == "d" || e.key == "ArrowRight") && key[1] + 1 <= selected[key[0]].length - 1){
                     changeSelected(key[0], key[1] + 1, selected)
-                    return
                 }
-            } else{
+            } else {
                 if (e.key.toLowerCase() == "s" || e.key.toLowerCase() == "d" || e.key == "ArrowDown" || e.key == "ArrowRight"){
                     changeSelected(0, 0, selected)
-                    return
                 }
             } 
+            key = checkSelected(selected)
+            if (key!=null){
+                console.log(key);
+                hoveract([key[0], key[1]])
+            }
+            
         })
     }
     async function game(){
@@ -226,7 +230,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
             }]
         ],
         [
-            [null, null, null],
+            [explaininject(null), explaininject(null), explaininject(null)],
             [explaininject(`
                 Zmienia jak trudna będzie rozgrywka:<br><br>
                 Łatwy - Dla osób które dopiero zaczynają,<br>
@@ -248,10 +252,12 @@ export default function settings(menu: HTMLElement, type: number = 0){
         ],
         1
     )
-    function explaininject(text: string) {
+    function explaininject(text: string | null) {
         return function() {
             explain.textContent = "";
+            if (text!=null){
             explain.insertAdjacentHTML("beforeend", text);
+        }
         }
     }
     const selected = selectedfnc();
