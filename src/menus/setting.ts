@@ -53,8 +53,8 @@ export default function settings(menu: HTMLElement, type: number = 0){
             <content class="flex flex-row w-full h-full">
                 <settings class="h-full w-full flex flex-col overflow-y-hidden pt-6 border-r-2 border-white">
                 </settings>
-                <explain class="w-full h-full border-white border-t-2">
-                <t class="m-2">Ustawia josdosokdkjnjdj lsafdj laddfda lja nfddnfnuibnbczuivncxpnvxon  oixjv nonicxv  o zcv czvnoicz vnoipc zvnienwreaw ea wj</t>
+                <explain class="w-full h-full border-white border-t-2 flex flex-col">
+                <t class="m-2 mt-5 text-xl h-full w-full font-thin tracking-tighter leading-6"></t>
                 </explain>
             </content>
             <esc class="absolute bottom-0 ml-1 opacity-50 text-lg">[ESC] - WRÓĆ </esc>
@@ -65,7 +65,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
     let topbaract: (Function | null)[] = [async function(){reloadset(menu, 0)}, async function(){reloadset(menu, 1)}, null];
 
     const settings = menu.getElementsByTagName("settings")[0];
-    const explain = menu.getElementsByTagName("explain")[0];
+    const explain = menu.getElementsByTagName("explain")[0].getElementsByTagName("t")[0];
 
     function changeName(list: string[], set: number, element: Element){
         if (set + 1 < list.length){
@@ -106,7 +106,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
     menu.getElementsByTagName("gamecontrol")[0].addEventListener("mousedown",()=>{
         reloadset(menu, 1);
     })
-
+    
     function skeleton(HTML: string, fncselected: Function, act:(Function | null)[][], hover: (Function | null)[][], start: number){
         removeAllEventListeners();
         settings.textContent = "";
@@ -118,10 +118,12 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 element?.addEventListener("mousemove", ()=>{
                     if (!(element.classList.contains("selected"))){
                         changeSelected(y, x, selected);
-                        const hoveract = hover[y][x];
-                        if (hoveract != null){
-                            hoveract()
-                        }
+                    }
+                })
+                element?.addEventListener("mouseenter",()=>{
+                    const hoveract = hover[y][x];
+                    if (hoveract != null){
+                        hoveract()
                     }
                 })
             }
@@ -181,7 +183,6 @@ export default function settings(menu: HTMLElement, type: number = 0){
             } 
         })
     }
-    
     async function game(){
         const selectedfnc = function(){return[
             topbarselected,
@@ -226,10 +227,33 @@ export default function settings(menu: HTMLElement, type: number = 0){
         ],
         [
             [null, null, null],
-            [function(){}]
+            [explaininject(`
+                Zmienia jak trudna będzie rozgrywka:<br><br>
+                Łatwy - Dla osób które dopiero zaczynają,<br>
+                Normalny - Dla osób które są doświadczane,<br>
+                PIEKŁOO - Dla osób które szukają wyzwania.
+                `)],
+            [explaininject(`
+                Podczas ruchu myszką, kamera się w przeciwną stronę myszki.<br><br>
+                Dla większej czystości możesz przełączyć na Lekki<br> i Wyłączony.
+                `)],
+            [explaininject(`
+                Podczas ruchu gracza (WSAD), kamera się porusza w stronę kierunku ruchu.<br><br>
+                Dla większej czystości możesz przełączyć na Lekki<br> i Wyłączony.
+                `)],
+            [explaininject(`
+                Dodaje animację do kamery w stylu kamera, dodaje więcej dynamizmu do gry.<br><br>
+                Dla większej czystości możesz przełączyć na Wyłączony.
+                `)],
         ],
         1
     )
+    function explaininject(text: string) {
+        return function() {
+            explain.textContent = "";
+            explain.insertAdjacentHTML("beforeend", text);
+        }
+    }
     const selected = selectedfnc();
 
     topbarinit(selected);
