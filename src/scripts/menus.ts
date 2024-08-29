@@ -1,19 +1,54 @@
-export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: Element[][]){
+export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: (Element | null)[][]){
     for(const selectedd of list){
         for (const element of selectedd){
             element?.classList.remove("selected");  
         }
     }
-    if (numberx == null){
-        numberx = 0;
-    }
     if(numbery != null){
+        if (numberx == null){
+            numberx = 0;
+        }
         if (list[numbery].length - 1 < numberx){
             numberx = 0;
         }
-        list[numbery][numberx].classList.add("selected")
+        const Element = list[numbery];
+        if (Element[numberx] != null){
+            Element[numberx]!.classList.add("selected")
+        // } else {
+        //     if (oldx == null && oldy == null){
+        //         for (let x=0;Element.length > x;x++){
+        //             if(Element[x]!=null){
+        //                 Element[x]!.classList.add("selected")
+        //                 return
+        //             }
+        //         }
+        //     } else {
+        //         const differencex = numberx - oldx!;
+        //         const differencey = numberx - oldy!;
+
+        //         if(0 < differencex){
+        //             for (let x=Element.length;0 < x;x--){
+        //                 if(Element[x]!=null){
+        //                     Element[x]!.classList.add("selected")
+        //                     return
+        //                 }
+        //         }   
+        //         } else if(0 > differencex){
+        //             for (let x=0;Element.length > x;x++){
+        //                 if(Element[x]!=null){
+        //                     Element[x]!.classList.add("selected")
+        //                     return
+        //                 }
+        //             }
+        //         }
+
+        //         if(0 > differencey){
+
+        //         }
+        //     }
+        }
+        }
     }
-}
 
 export function checkSelected(list: Element[][]): number[] | null{
     let y = 0;

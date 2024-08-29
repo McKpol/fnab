@@ -55,7 +55,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 <settings class="h-full w-full flex flex-col overflow-y-hidden pt-6 border-r-2 border-white">
                 </settings>
                 <explain class="w-full h-full border-white border-t-2 flex flex-col">
-                <t class="m-2 mt-5 text-xl h-full w-full font-thin tracking-tighter leading-6"></t>
+                    <t class="m-2 mt-5 text-xl h-full w-full font-thin tracking-tighter leading-6"></t>
                 </explain>
             </content>
             <esc class="absolute bottom-0 ml-1 opacity-50 text-lg">[ESC] - WRÓĆ </esc>
@@ -63,10 +63,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
 `)
 
     let topbarselected = [menu.getElementsByTagName("gameset")[0], menu.getElementsByTagName("gamecontrol")[0], menu.getElementsByTagName("gameaudio")[0]];
-    let topbaract: (Function | null)[] = [async function(){reloadset(menu, 0)}, async function(){reloadset(menu, 1)}, null];
+    let topbaract: (Function | null)[] = [function(){reloadset(menu, 0)}, function(){reloadset(menu, 1)}, null];
 
     const settings = menu.getElementsByTagName("settings")[0];
-    const explain = menu.getElementsByTagName("explain")[0].getElementsByTagName("t")[0];
+    const explain = menu.getElementsByTagName("explain")[0];
 
     function changeName(list: string[], set: number, element: Element){
         if (set + 1 < list.length){
@@ -79,10 +79,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
         return set;
     }
 
-    function topbarinit(selected: Element[][]){
+    function topbarinit(selected: (Element | null)[][]){
         selected[0].forEach((element, i) => {
-            element.addEventListener("mousemove", ()=>{
-                if (!element.classList.contains("selected")) {
+            element!.addEventListener("mousemove", ()=>{
+                if (!element!.classList.contains("selected")) {
                     changeSelected(0, i, selected);
                 }
             });
@@ -176,9 +176,9 @@ export default function settings(menu: HTMLElement, type: number = 0){
     )
     function explaininject(text: string | null) {
         return function() {
-            explain.textContent = "";
+            explain.getElementsByTagName("t")[0].textContent = "";
             if (text!=null){
-            explain.insertAdjacentHTML("beforeend", text);
+            explain.getElementsByTagName("t")[0].insertAdjacentHTML("beforeend", text);
         }
         }
     }
@@ -205,22 +205,59 @@ export default function settings(menu: HTMLElement, type: number = 0){
     setting("breathcamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY"][value[3]];   
     }
     
+    
     function control(){
+        explain.textContent = "";
+        explain.insertAdjacentHTML("beforeend", /*html*/`
+            <removekey class="set"><t class="mx-auto">Usuń klawisze<t></removekey>
+            `)
         const selectedfnc = function(){return[
             topbarselected,
-            [menu.getElementsByTagName("up")[0]]
+            [menu.getElementsByTagName("gotoup")[0]],
+            [menu.getElementsByTagName("gototopbar")[0]],
+            [menu.getElementsByTagName("up")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("down")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("left")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("right")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("use")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("inv")[0],menu.getElementsByTagName("removekey")[0]],
+            [menu.getElementsByTagName("esc")[0],menu.getElementsByTagName("removekey")[0]]
         ]};
         skeleton(/*html*/`
+            <gotoup></gotoup>
+            <gototopbar></gototopbar>
             <up class="set"><text class="flex-none">Góra</text><t class="t" >Reading...</t></up>
+            <down class="set"><text class="flex-none">Dół</text><t class="t" >Reading...</t></down>
+            <left class="set"><text class="flex-none">Lewo</text><t class="t" >Reading...</t></left>
+            <right class="set"><text class="flex-none">Prawo</text><t class="t" >Reading...</t></right>
+            <use class="set"><text class="flex-none">Użyj/Dalej</text><t class="t" >Reading...</t></use>
+            <inv class="set"><text class="flex-none">Epwikunek</text><t class="t" >Reading...</t></inv>
+            <esc class="set"><text class="flex-none">Pauza/Anuluj</text><t class="t" >Reading...</t></esc>
             `,
         selectedfnc,
         [
             topbaract,
-            [async function(){console.log("Test")}]
+            [async function(){console.log("Test")},null,null,null],
+            [null],
+            [null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
         ],
         [
             [null, null, null],
-            [function(){}]
+            [function(){changeSelected(3, 0, selected)}],
+            [function(){changeSelected(0, 0, selected)}],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
+            [null,null],
         ], 1, settings
     )
 
@@ -229,7 +266,6 @@ export default function settings(menu: HTMLElement, type: number = 0){
     topbarinit(selected);
     }
     addEvent("escape_settings", "keydown", (e:any)=>{
-        console.log("nodebil")
         if(e.key == "Escape"){
             mainmenu(menu);
         }});
