@@ -7,7 +7,20 @@
     <script type="module" src="/src/main.ts" defer></script>
 
   <body>
-    
+    <style>
+      @keyframes show {
+        0% {opacity: 1;}
+        50% {opacity: 1;}
+        100% {opacity: 0;}
+      }
+      .showerror{
+        animation: show 8s;
+      }
+    </style>
+    <error style="z-index: 9999; opacity: 0; bottom: 0px; position: absolute; border-radius: 5px; background-color: red; width: 25%; height: 15%; margin: 5px; padding: 0; flex-direction: column; display: flex;">
+      <t style="font-size: 20px; font-weight: 900; margin-left: 5px;"></t>
+      <o style="margin-left: 10px; line-height: 15px;"></o>
+    </error> 
     <game id="game">
       <menu id="menu" style="position: absolute; width: 100%; height: 100%; margin: 0; padding: 0;">
       </menu>

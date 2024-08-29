@@ -1,7 +1,9 @@
 import settings from './menus/setting';
+import listeners from './scripts/listeners';
 
 let game: HTMLElement = document.getElementById("game")!;
 let menu: HTMLElement = document.getElementById("menu")!;
+listeners(menu);
 
 export function getScale(){
   let heightscale = window.innerHeight/(1080/2);

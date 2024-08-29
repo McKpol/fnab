@@ -4,6 +4,7 @@ static FILENAME: [& str; 1] = ["configfile"];
 use std::fs::{self, OpenOptions};
 use std::io::{self, SeekFrom, prelude::*, Result};
 use std::path::Path;
+use tauri::{AppHandle, Emitter};
 
     pub fn create_files() -> Result<()> {
         let mut i = 0;
@@ -30,18 +31,27 @@ use std::path::Path;
         Err(e) => println!("Error when reseting save (1/2, Deleting), Error: {}", e)
     }
     match create_files() {
-        Ok(_) => println!("Created {}", FILENAME[which]),
+        Ok(_) => println!("Restarted {}", FILENAME[which]),
         Err(e) => println!("Error when reseting save (2/2, Creating), Error: {}", e)
     }
     }
 
     #[tauri::command]
-    pub fn write_file(line: usize, content: &str, which: usize) {
-    fn write(line: usize, content: &str, which: usize) -> io::Result<()> {
+    pub fn write_file(line: usize, content: &str, which: usize, app: AppHandle) {
+    fn write(line: usize, content: &str, which: usize, app: AppHandle) -> io::Result<()> {
     let mut config_fill = CONFIG_FILL[which];
     let mut file = OpenOptions::new().read(true).write(true).open(FILENAME[which])?;
     let mut read = String::new();
     file.read_to_string(&mut read)?;
+
+    // Collect lines into a Vec<String>
+    let lines: Vec<String> = read.lines().map(|line| line.to_string()).collect();
+
+    if config_fill.len() != lines.len(){
+        reset_file(which);
+        app.emit("writefile", which).unwrap();
+        return Err(io::Error::new(io::ErrorKind::InvalidData, format!("{} is corrupted, resetting file.", FILENAME[which])));
+    }
 
     let mut i = 0;
     for line in read.lines(){
@@ -64,7 +74,7 @@ use std::path::Path;
     }
     Ok(())
     }
-    match write(line, content, which){
+    match write(line, content, which, app){
         Ok(_) => println!("Writed {}, line {}, to file {}", content, line, FILENAME[which]),
         Err(e) => println!("Error when writing save, Error: {}", e)
     }

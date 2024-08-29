@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { changeSelected, reloadset, skeleton } from "../scripts/menus";
 import { addEvent, removeallEvent } from "../scripts/savelisteners";
 
+
 export default function settings(menu: HTMLElement, type: number = 0){
     removeallEvent();
     menu.textContent = "";

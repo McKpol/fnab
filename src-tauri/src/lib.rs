@@ -3,7 +3,7 @@ mod file;
 
 pub fn run() {
   match file::create_files() {
-    Ok(_) => println!("Created file"),
+    Ok(_) => println!(""),
     Err(_) => file::reset_file(0)
    }
  

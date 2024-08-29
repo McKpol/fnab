@@ -4,6 +4,7 @@ import { getMouse } from '../scripts/scripts';
 import { skeleton, changeSelected } from '../scripts/menus';
 import { addEvent, removeallEvent } from '../scripts/savelisteners';
 
+
 export default function mainmenu(menu: HTMLElement){
     removeallEvent()
     menu.textContent = "";
@@ -44,7 +45,7 @@ const selected = selectedfnc();
         selectedfnc,
         [   
             [null],
-            [function(){settings(menu)}],
+            [function(){menu.style.transform = `translate(0px, 0px)`;settings(menu)}],
             [async function(){await exit(0)}]
         ],
         [   [null],
