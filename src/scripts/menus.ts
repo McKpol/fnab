@@ -14,38 +14,6 @@ export function changeSelected(numbery: number | null = null, numberx: number | 
         const Element = list[numbery];
         if (Element[numberx] != null){
             Element[numberx]!.classList.add("selected")
-        // } else {
-        //     if (oldx == null && oldy == null){
-        //         for (let x=0;Element.length > x;x++){
-        //             if(Element[x]!=null){
-        //                 Element[x]!.classList.add("selected")
-        //                 return
-        //             }
-        //         }
-        //     } else {
-        //         const differencex = numberx - oldx!;
-        //         const differencey = numberx - oldy!;
-
-        //         if(0 < differencex){
-        //             for (let x=Element.length;0 < x;x--){
-        //                 if(Element[x]!=null){
-        //                     Element[x]!.classList.add("selected")
-        //                     return
-        //                 }
-        //         }   
-        //         } else if(0 > differencex){
-        //             for (let x=0;Element.length > x;x++){
-        //                 if(Element[x]!=null){
-        //                     Element[x]!.classList.add("selected")
-        //                     return
-        //                 }
-        //             }
-        //         }
-
-        //         if(0 > differencey){
-
-        //         }
-        //     }
         }
         }
     }

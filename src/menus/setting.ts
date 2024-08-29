@@ -79,11 +79,14 @@ export default function settings(menu: HTMLElement, type: number = 0){
         return set;
     }
 
-    function topbarinit(selected: (Element | null)[][]){
+    function topbarinit(selected: (Element | null)[][], fnc: Function | null = null){
         selected[0].forEach((element, i) => {
             element!.addEventListener("mousemove", ()=>{
                 if (!element!.classList.contains("selected")) {
                     changeSelected(0, i, selected);
+                    if (fnc != null){
+                        fnc();
+                    }
                 }
             });
         });
@@ -108,6 +111,15 @@ export default function settings(menu: HTMLElement, type: number = 0){
         reloadset(menu, 1);
     })
 
+    function explaininject(text: string | null) {
+        return function() {
+            explain.getElementsByTagName("t")[0].textContent = "";
+            if (text!=null){
+            explain.getElementsByTagName("t")[0].insertAdjacentHTML("beforeend", text);
+        }
+        }
+    }
+    
     async function game(){
         const selectedfnc = function(){return[
             topbarselected,
@@ -174,17 +186,9 @@ export default function settings(menu: HTMLElement, type: number = 0){
         1,
         settings,
     )
-    function explaininject(text: string | null) {
-        return function() {
-            explain.getElementsByTagName("t")[0].textContent = "";
-            if (text!=null){
-            explain.getElementsByTagName("t")[0].insertAdjacentHTML("beforeend", text);
-        }
-        }
-    }
     const selected = selectedfnc();
 
-    topbarinit(selected);
+    topbarinit(selected, explaininject(null));
 
     const value = [Number(await invoke("read_file", {line: 0, which: 0})), 
         Number(await invoke("read_file", {line: 1, which: 0})), 
@@ -203,7 +207,8 @@ export default function settings(menu: HTMLElement, type: number = 0){
     setting("mousecamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"][value[1]];
     setting("movecamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY", "LEKKI"][value[2]];   
     setting("breathcamera").getElementsByClassName("t")[0].textContent = ["WYŁĄCZONY", "WŁĄCZONY"][value[3]];   
-    }
+
+}
     
     
     function control(){
@@ -226,18 +231,18 @@ export default function settings(menu: HTMLElement, type: number = 0){
         skeleton(/*html*/`
             <gotoup></gotoup>
             <gototopbar></gototopbar>
-            <up class="set"><text class="flex-none">Góra</text><t class="t" >Reading...</t></up>
-            <down class="set"><text class="flex-none">Dół</text><t class="t" >Reading...</t></down>
-            <left class="set"><text class="flex-none">Lewo</text><t class="t" >Reading...</t></left>
-            <right class="set"><text class="flex-none">Prawo</text><t class="t" >Reading...</t></right>
-            <use class="set"><text class="flex-none">Użyj/Dalej</text><t class="t" >Reading...</t></use>
-            <inv class="set"><text class="flex-none">Epwikunek</text><t class="t" >Reading...</t></inv>
-            <esc class="set"><text class="flex-none">Pauza/Anuluj</text><t class="t" >Reading...</t></esc>
+            <up class="set"><text class="flex-none">Góra</text><t class="t" >></t></up>
+            <down class="set"><text class="flex-none">Dół</text><t class="t" >></t></down>
+            <left class="set"><text class="flex-none">Lewo</text><t class="t" >></t></left>
+            <right class="set"><text class="flex-none">Prawo</text><t class="t" >></t></right>
+            <use class="set"><text class="flex-none">Użyj/Dalej</text><t class="t" >></t></use>
+            <inv class="set"><text class="flex-none">Epwikunek</text><t class="t" >></t></inv>
+            <esc class="set"><text class="flex-none">Pauza/Anuluj</text><t class="t" >></t></esc>
             `,
         selectedfnc,
         [
             topbaract,
-            [async function(){console.log("Test")},null,null,null],
+            [function(){console.log("Test")},null,null,null],
             [null],
             [null],
             [null,null],
