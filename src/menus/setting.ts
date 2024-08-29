@@ -1,15 +1,10 @@
-import { removeAllEventListeners } from "../scripts/savelisteners";
 import mainmenu from "./main";
 import { invoke } from "@tauri-apps/api/core";
 import { changeSelected, reloadset, skeleton } from "../scripts/menus";
+import { addEvent, removeallEvent } from "../scripts/savelisteners";
 
 export default function settings(menu: HTMLElement, type: number = 0){
-    removeAllEventListeners();
-    document.addEventListener("keydown", (e)=>{
-        if(e.key == "Escape"){
-            mainmenu(menu);
-        }
-    })
+    removeallEvent();
     menu.textContent = "";
     menu.insertAdjacentHTML('beforeend', /*html*/`
         <style>
@@ -176,7 +171,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 `)],
         ],
         1,
-        settings
+        settings,
     )
     function explaininject(text: string | null) {
         return function() {
@@ -232,4 +227,9 @@ export default function settings(menu: HTMLElement, type: number = 0){
 
     topbarinit(selected);
     }
+    addEvent("escape_settings", "keydown", (e:any)=>{
+        console.log("nodebil")
+        if(e.key == "Escape"){
+            mainmenu(menu);
+        }});
 }

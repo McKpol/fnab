@@ -1,15 +1,11 @@
-import { removeAllEventListeners } from '../scripts/savelisteners';
 import { exit } from '@tauri-apps/plugin-process';
 import settings from './setting';
 import { getMouse } from '../scripts/scripts';
 import { skeleton, changeSelected } from '../scripts/menus';
+import { addEvent, removeallEvent } from '../scripts/savelisteners';
 
 export default function mainmenu(menu: HTMLElement){
-    removeAllEventListeners();
-    document.addEventListener("mousemove", (e)=>{
-        const MousePosition = getMouse(e);
-        menu.style.transform = `translate(${MousePosition[0]/-25}px, ${MousePosition[1]/-25}px)`;
-    })
+    removeallEvent()
     menu.textContent = "";
     menu.insertAdjacentHTML('beforeend', /*html*/`
         <style>
@@ -42,13 +38,13 @@ const selectedfnc = function(){return[
     [menu.getElementsByTagName("settings")[0]],
     [menu.getElementsByTagName("quit")[0]]
 ]};
-const selected = selectedfnc();
 
+const selected = selectedfnc();
     skeleton(null, 
         selectedfnc,
         [   
             [null],
-            [function(){return settings(menu)}],
+            [function(){settings(menu)}],
             [async function(){await exit(0)}]
         ],
         [   [null],
@@ -56,9 +52,9 @@ const selected = selectedfnc();
             [null]
         ],
         0,
-        document.getElementById("buttons") as HTMLElement
+        document.getElementById("buttons") as HTMLElement,
     )
-
+    
 const buttons = document.getElementById("buttons");
 
  // Clear selected on hover CONINUE
@@ -70,4 +66,9 @@ buttons?.getElementsByTagName("continue")[0].addEventListener("mouseenter",()=>{
 buttons?.addEventListener("mouseleave", ()=>{
     changeSelected(null, null, selected);
 })
+
+addEvent("cameramove_mainmenu", "mousemove", (e:any)=>{
+        const MousePosition = getMouse(e);
+        menu.style.transform = `translate(${MousePosition[0]/-25}px, ${MousePosition[1]/-25}px)`;
+    });
 }

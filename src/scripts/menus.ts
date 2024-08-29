@@ -32,11 +32,15 @@ export function checkSelected(list: Element[][]): number[] | null{
 }
 
 import settings from "../menus/setting";
+import { addEvent } from "./savelisteners";
 export function reloadset(menu: HTMLElement, type: number){
     settings(menu, type);
 }
 
+// import { removeAllEventListeners } from "./savelisteners";
+
 export function skeleton(HTML: string | null, fncselected: Function, act:(Function | null)[][], hover: (Function | null)[][], start: number, inject: Element){
+
     if (HTML!=null){
         inject.textContent = "";
         inject.insertAdjacentHTML('beforeend', `${HTML}`);
@@ -70,7 +74,7 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
             }
         }
     }
-    document.addEventListener("keydown",(e)=>{
+    addEvent("skeleton_keydown", "keydown",(e:any)=>{
 
         function hoveract(key: [number,number]){
             const hoveract = hover[key[0]][key[1]]
@@ -109,6 +113,5 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
         if (key!=null){
             hoveract([key[0], key[1]])
         }
-        
-    })
+    })    
 }
