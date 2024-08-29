@@ -1,6 +1,6 @@
 // import mainmenu from './menus/main';
 import settings from './menus/setting';
-import { init, DocumentWithEventListeners } from './scripts/savelisteners';
+import { init } from './scripts/savelisteners';
 
 init();
 let game: HTMLElement = document.getElementById("game")!;
@@ -24,7 +24,7 @@ function gameResize(){
 window.addEventListener("DOMContentLoaded", () => {
   settings(menu);
   gameResize();
-    window.addEventListener("resize", (e)=>{
+    window.addEventListener("resize", ()=>{
       gameResize();
     })
 });

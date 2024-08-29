@@ -1,5 +1,4 @@
 export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: Element[][]){
-    console.log(list);
     for(const selectedd of list){
         for (const element of selectedd){
             element?.classList.remove("selected");  
@@ -37,10 +36,7 @@ export function reloadset(menu: HTMLElement, type: number){
     settings(menu, type);
 }
 
-import { removeAllEventListeners } from "./savelisteners";
-
 export function skeleton(HTML: string | null, fncselected: Function, act:(Function | null)[][], hover: (Function | null)[][], start: number, inject: Element){
-    removeAllEventListeners();
     if (HTML!=null){
         inject.textContent = "";
         inject.insertAdjacentHTML('beforeend', `${HTML}`);
@@ -111,7 +107,6 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
         } 
         key = checkSelected(selected)
         if (key!=null){
-            console.log(key);
             hoveract([key[0], key[1]])
         }
         

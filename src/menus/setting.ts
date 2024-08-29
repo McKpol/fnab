@@ -5,6 +5,11 @@ import { changeSelected, reloadset, skeleton } from "../scripts/menus";
 
 export default function settings(menu: HTMLElement, type: number = 0){
     removeAllEventListeners();
+    document.addEventListener("keydown", (e)=>{
+        if(e.key == "Escape"){
+            mainmenu(menu);
+        }
+    })
     menu.textContent = "";
     menu.insertAdjacentHTML('beforeend', /*html*/`
         <style>
@@ -227,9 +232,4 @@ export default function settings(menu: HTMLElement, type: number = 0){
 
     topbarinit(selected);
     }
-    document.addEventListener("keydown", (e)=>{
-        if(e.key == "Escape"){
-            mainmenu(menu);
-        }
-    })
 }
