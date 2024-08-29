@@ -2,6 +2,7 @@ import { exit } from '@tauri-apps/plugin-process';
 import settings from './setting';
 import { removeAllEventListeners } from '../scripts/savelisteners';
 import { getMouse } from '../scripts/scripts';
+import { skeleton, changeSelected } from '../scripts/menus';
 
 export default function mainmenu(menu: HTMLElement){
     removeAllEventListeners();
@@ -32,80 +33,44 @@ export default function mainmenu(menu: HTMLElement){
         </all>
 `)
 
+const selectedfnc = function(){return[
+    [menu.getElementsByTagName("play")[0]],
+    [menu.getElementsByTagName("settings")[0]],
+    [menu.getElementsByTagName("quit")[0]]
+]};
+const selected = selectedfnc();
+    
+    skeleton(null, 
+        selectedfnc,
+        [   
+            [null],
+            [function(){return settings(menu)}],
+            [async function(){await exit(0)}]
+        ],
+        [   [null],
+            [null],
+            [null]
+        ],
+        0,
+        document.getElementById("buttons") as HTMLElement
+    )
+
+const buttons = document.getElementById("buttons");
+
+ // Clear selected on hover CONINUE
+buttons?.getElementsByTagName("continue")[0].addEventListener("mouseenter",()=>{
+    changeSelected(null, null, selected)
+})
+
+ // Clear selected on unhover buttons
+buttons?.addEventListener("mouseleave", ()=>{
+    changeSelected(null, null, selected);
+})
+
 document.addEventListener("mousemove", (e)=>{
     console.log("mousemove");
     const MousePosition = getMouse(e);
     menu.style.transform = `translate(${MousePosition[0]/-25}px, ${MousePosition[1]/-25}px)`   
     console.log(MousePosition)
-})
-
-const buttons = document.getElementById("buttons");
-const selected = [buttons?.getElementsByTagName("play")[0],buttons?.getElementsByTagName("settings")[0],buttons?.getElementsByTagName("quit")[0]];
-
-function changeSelected(number: number | null = null){
-    for(const element of selected){
-        element?.classList.remove("selected");    
-    }
-    if(number != null){
-        selected[number]?.classList.add("selected")
-    }
-}
-
-function checkSelected(): number | null{
-    let i = 0;
-    for(const element of selected){
-        if(element?.classList.contains("selected")){
-            return i;
-        }
-        i += 1;
-    }
-    return null;
-}
-
- // Clear selected on hover CONINUE
-buttons?.getElementsByTagName("continue")[0].addEventListener("mouseenter",()=>{
-    changeSelected()
-})
-
- // Clear selected on unhover buttons
-buttons?.addEventListener("mouseleave", ()=>{
-    changeSelected();
-})
-
- // Keyboard Support
-document.addEventListener("keydown",(e)=>{
-    const index = checkSelected();
-    if(e.key == "w"|| e.key == "ArrowUp"){
-        if(index != null && index != 0){
-            changeSelected(index - 1);
-        }
-    }
-    if(e.key == "s"|| e.key == "ArrowDown"){
-        if(index != null && index + 1 < selected.length ){
-            changeSelected(index + 1);
-        } else if (index == null){
-            changeSelected(0);
-        }
-    }
-})
-
- // Mouse support
-for(let i = 0; i < selected.length; i++){
-    const element = selected[i];
-    element?.addEventListener("mousemove", ()=>{
-        if (!(element.classList.contains("selected"))){
-            changeSelected(i);
-        }
-    })
-}
-
- // Action buttons
-buttons?.getElementsByTagName("quit")[0]?.addEventListener("mousedown",async ()=>{
-    console.log("quit")
-    await exit(0);
-})
-
-buttons?.getElementsByTagName("settings")[0].addEventListener("mousedown",()=>{
-    settings(menu);
 })
 }

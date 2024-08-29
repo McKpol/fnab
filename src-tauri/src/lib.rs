@@ -28,7 +28,7 @@ fn create_files() -> Result<()> {
 pub fn run() {
   match create_files() {
     Ok(_) => println!("Created {:#?}", FILENAME),
-    Err(e) => println!("Error when creating savefile, Error: {}", e)
+    Err(_) => reset_file(0)
    }
  
   tauri::Builder::default()

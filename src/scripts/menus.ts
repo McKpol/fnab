@@ -36,3 +36,84 @@ import settings from "../menus/setting";
 export function reloadset(menu: HTMLElement, type: number){
     settings(menu, type);
 }
+
+import { removeAllEventListeners } from "./savelisteners";
+
+export function skeleton(HTML: string | null, fncselected: Function, act:(Function | null)[][], hover: (Function | null)[][], start: number, inject: Element){
+    removeAllEventListeners();
+    if (HTML!=null){
+        inject.textContent = "";
+        inject.insertAdjacentHTML('beforeend', `${HTML}`);
+    }
+    const selected: Element[][] = fncselected();
+    for(let y = start; y < selected.length; y++){
+        for (let x = 0; x < selected[y].length; x++){
+            const element = selected[y][x];
+            element?.addEventListener("mousemove", ()=>{
+                if (!(element.classList.contains("selected"))){
+                    changeSelected(y, x, selected);
+                }
+            })
+        }
+    }
+
+    for (let y = start; y < selected.length; y++){
+        if (y != 0){
+            for (let x = 0; x < selected[y].length; x++){
+                const fnc = act[y][x];
+                const element = selected[y][x];
+                const hoveract = hover[y][x];                
+
+                if (hoveract != null){
+                    element?.addEventListener("mouseenter",()=>hoveract())
+                }
+                if (fnc != null){
+                    element.addEventListener("mousedown", ()=>fnc())
+                }
+                x++;
+            }
+        }
+    }
+    document.addEventListener("keydown",(e)=>{
+
+        function hoveract(key: [number,number]){
+            const hoveract = hover[key[0]][key[1]]
+            if (hoveract) {
+                hoveract()
+            }
+        }
+
+        let key = checkSelected(selected);
+        if (key != null){
+            if(e.key == "Enter"){
+                const actn = act[key[0]][key[1]]
+                if (actn != null){
+                    actn();
+                }
+                return
+            }
+            if((e.key.toLowerCase() == "w" || e.key == "ArrowUp") && key[0] - 1 >= 0){
+                changeSelected(key[0] - 1, key[1], selected)
+            } else
+            if((e.key.toLowerCase() == "s" || e.key == "ArrowDown") && key[0] + 1 <= selected.length - 1){
+                changeSelected(key[0] + 1, key[1], selected)
+            } else
+            if((e.key.toLowerCase() == "a" || e.key == "ArrowLeft") && key[1] - 1 >= 0){
+                changeSelected(key[0], key[1] - 1, selected)
+            } else
+            if((e.key.toLowerCase() == "d" || e.key == "ArrowRight") && key[1] + 1 <= selected[key[0]].length - 1){
+                changeSelected(key[0], key[1] + 1, selected)
+            }
+        } else {
+            if (e.key.toLowerCase() == "s" || e.key.toLowerCase() == "d" || e.key == "ArrowDown" || e.key == "ArrowRight"){
+                changeSelected(0, 0, selected)
+            }
+        } 
+        key = checkSelected(selected)
+        if (key!=null){
+            console.log(key);
+            hoveract([key[0], key[1]])
+        }
+        
+    })
+}
