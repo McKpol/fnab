@@ -1,4 +1,4 @@
-export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: (Element | null)[][]){
+export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: (Element | null)[][], code: (Function | null) = null){
     for(const selectedd of list){
         for (const element of selectedd){
             element?.classList.remove("selected");  
@@ -15,6 +15,9 @@ export function changeSelected(numbery: number | null = null, numberx: number | 
         if (Element[numberx] != null){
             Element[numberx]!.classList.add("selected")
         }
+        }
+        if (code!=null){
+            code();
         }
     }
 
@@ -114,6 +117,7 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
         } 
         key = checkSelected(selected)
         if (key!=null){
+            console.log("test")
             hoveract([key[0], key[1]])
         }
     })    

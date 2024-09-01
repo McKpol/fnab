@@ -1,5 +1,5 @@
 
-static CONFIG_FILL: [[&str; 4]; 1] = [["0","0","0","0"]];
+static CONFIG_FILL: [[&str; 11]; 1] = [["0","0","0","0","W,ArrowUp","S,ArrowDown","A,ArrowLeft","D,ArrowRight","Z,Enter","C,E","X,Esc"]];
 static FILENAME: [& str; 1] = ["configfile"];
 use std::fs::{self, OpenOptions};
 use std::io::{self, SeekFrom, prelude::*, Result};

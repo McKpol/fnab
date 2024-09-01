@@ -211,10 +211,11 @@ export default function settings(menu: HTMLElement, type: number = 0){
 }
     
     
-    function control(){
+    async function control(){
         explain.textContent = "";
         explain.insertAdjacentHTML("beforeend", /*html*/`
-            <removekey class="set"><t class="mx-auto">Usuń klawisze<t></removekey>
+            <removekey class="set"><t class="mx-auto">Ustaw domyślne klawisze<t></removekey>
+            <keys class="w-full m-auto text-center -translate-y-full font-black text-5xl"></keys>
             `)
         const selectedfnc = function(){return[
             topbarselected,
@@ -228,6 +229,42 @@ export default function settings(menu: HTMLElement, type: number = 0){
             [menu.getElementsByTagName("inv")[0],menu.getElementsByTagName("removekey")[0]],
             [menu.getElementsByTagName("esc")[0],menu.getElementsByTagName("removekey")[0]]
         ]};
+        
+        let keysettings: string[][] = [];
+        console.log("Here")
+        for (let x = 0; x < 7; x++){
+            const text: string = await invoke("read_file", {line: 4+x, which: 0});
+            let namekey = [];
+            let old_text = "";
+            for (let y = 0; y < text.length; y++){
+                if (text[y]==","){
+                    namekey.push(old_text);
+                    old_text = "";
+                } else{
+                    old_text = old_text + text[y];
+                }
+            }
+            namekey.push(old_text)
+            keysettings.push(namekey);
+        }
+        console.log(keysettings);
+
+        function changekey(number: number | null = null){
+            return function(){
+                console.log("YES!")
+                let text = "";
+                if (number!=null){
+                    text = keysettings[number][0];
+                    for (let x=1;keysettings[number].length>x;x++){
+                        text = text + ", " + keysettings[number][x];
+                    }
+                    explain.getElementsByTagName("removekey")[0].getElementsByTagName("t")[0].textContent = "Usuń klawisze";
+                } else {
+                    explain.getElementsByTagName("removekey")[0].getElementsByTagName("t")[0].textContent = "Ustaw domyślne klawisze";
+                }
+                explain.getElementsByTagName("keys")[0].textContent = text;}
+            }
+
         skeleton(/*html*/`
             <gotoup></gotoup>
             <gototopbar></gototopbar>
@@ -253,22 +290,22 @@ export default function settings(menu: HTMLElement, type: number = 0){
             [null,null],
         ],
         [
-            [null, null, null],
-            [function(){changeSelected(3, 0, selected)}],
-            [function(){changeSelected(0, 0, selected)}],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
+            [changekey(), changekey(), changekey()],
+            [function(){changeSelected(3, 0, selected, changekey(0));}],
+            [function(){changeSelected(0, 0, selected, changekey());}],
+            [changekey(0),null],
+            [changekey(1),null],
+            [changekey(2),null],
+            [changekey(3),null],
+            [changekey(4),null],
+            [changekey(5),null],
+            [changekey(6),null],
         ], 1, settings
     )
 
     const selected = selectedfnc();
 
-    topbarinit(selected);
+    topbarinit(selected, changekey());
     }
     addEvent("escape_settings", "keydown", (e:any)=>{
         if(e.key == "Escape"){
