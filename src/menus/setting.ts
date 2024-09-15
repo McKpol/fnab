@@ -1,8 +1,8 @@
 import mainmenu from "./main";
 import { invoke } from "@tauri-apps/api/core";
 import { changeSelected, reloadset, skeleton } from "../scripts/menus";
-import { addEvent, removeallEvent } from "../scripts/savelisteners";
-
+import { addEvent, removeallEvent, removeEvent } from "../scripts/savelisteners";
+import { MoveMenu, SetMoveMenu, acceptedKeys } from "../scripts/publicvars";
 
 export default function settings(menu: HTMLElement, type: number = 0){
     removeallEvent();
@@ -63,7 +63,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
 `)
 
     let topbarselected = [menu.getElementsByTagName("gameset")[0], menu.getElementsByTagName("gamecontrol")[0], menu.getElementsByTagName("gameaudio")[0]];
-    let topbaract: (Function | null)[] = [function(){reloadset(menu, 0)}, function(){reloadset(menu, 1)}, null];
+    let topbaract: (Function | null)[] = [function(){if(!MoveMenu){reloadset(menu, 0)}}, function(){if(!MoveMenu){reloadset(menu, 1)}}, null];
 
     const settings = menu.getElementsByTagName("settings")[0];
     const explain = menu.getElementsByTagName("explain")[0];
@@ -83,9 +83,11 @@ export default function settings(menu: HTMLElement, type: number = 0){
         selected[0].forEach((element, i) => {
             element!.addEventListener("mousemove", ()=>{
                 if (!element!.classList.contains("selected")) {
-                    changeSelected(0, i, selected);
-                    if (fnc != null){
-                        fnc();
+                    if (!MoveMenu){
+                        changeSelected(0, i, selected);
+                        if (fnc != null){
+                            fnc();
+                        }
                     }
                 }
             });
@@ -105,10 +107,10 @@ export default function settings(menu: HTMLElement, type: number = 0){
     }
     
     menu.getElementsByTagName("gameset")[0].addEventListener("mousedown",()=>{
-        reloadset(menu, 0);
+        if(!MoveMenu){reloadset(menu, 0)};
     })
     menu.getElementsByTagName("gamecontrol")[0].addEventListener("mousedown",()=>{
-        reloadset(menu, 1);
+        if(!MoveMenu){reloadset(menu, 1)};
     })
 
     function explaininject(text: string | null) {
@@ -215,7 +217,8 @@ export default function settings(menu: HTMLElement, type: number = 0){
         explain.textContent = "";
         explain.insertAdjacentHTML("beforeend", /*html*/`
             <removekey class="set"><t class="mx-auto">Ustaw domyślne klawisze<t></removekey>
-            <keys class="w-full m-auto text-center -translate-y-full font-black text-5xl"></keys>
+            <keys class="w-full m-auto text-center h-2/3 font-black text-5xl"></keys>
+            <backkey class="absolute hidden font-bold bottom-1/3 w-1/2 text-center">Kliknij BACKSPACE aby powrócić</backkey>
             `)
         const selectedfnc = function(){return[
             topbarselected,
@@ -231,7 +234,6 @@ export default function settings(menu: HTMLElement, type: number = 0){
         ]};
         
         let keysettings: string[][] = [];
-        console.log("Here")
         for (let x = 0; x < 7; x++){
             const text: string = await invoke("read_file", {line: 4+x, which: 0});
             let namekey = [];
@@ -251,7 +253,6 @@ export default function settings(menu: HTMLElement, type: number = 0){
 
         function changekey(number: number | null = null){
             return function(){
-                console.log("YES!")
                 let text = "";
                 if (number!=null){
                     text = keysettings[number][0];
@@ -264,6 +265,28 @@ export default function settings(menu: HTMLElement, type: number = 0){
                 }
                 explain.getElementsByTagName("keys")[0].textContent = text;}
             }
+
+
+        function setkey(number: number) {
+            explain.getElementsByTagName("backkey")[0].classList.remove("hidden");
+            SetMoveMenu(true);
+            let keys = keysettings[number];
+            addEvent("setkey", "keydown", (e: any)=>{
+                const key: string = e.key;
+                if (acceptedKeys.includes(key.toLowerCase()) && !keys.includes(key)){
+                    keysettings[number].push(key);
+                    console.log(keys);
+                }
+                
+                if (key == "Backspace"){
+                    SetMoveMenu(false);
+                    explain.getElementsByTagName("backkey")[0].classList.add("hidden");
+                    removeEvent("setkey");
+                }
+                
+                changekey(number);
+            });
+        }
 
         skeleton(/*html*/`
             <gotoup></gotoup>
@@ -279,15 +302,15 @@ export default function settings(menu: HTMLElement, type: number = 0){
         selectedfnc,
         [
             topbaract,
-            [function(){console.log("Test")},null,null,null],
+            [function(){},null,null,null],
             [null],
-            [null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
-            [null,null],
+            [function(){return setkey(0)}],
+            [function(){return setkey(1)},null],
+            [function(){return setkey(2)},null],
+            [function(){return setkey(3)},null],
+            [function(){return setkey(4)},null],
+            [function(){return setkey(5)},null],
+            [function(){return setkey(6)},null],
         ],
         [
             [changekey(), changekey(), changekey()],
@@ -308,7 +331,7 @@ export default function settings(menu: HTMLElement, type: number = 0){
     topbarinit(selected, changekey());
     }
     addEvent("escape_settings", "keydown", (e:any)=>{
-        if(e.key == "Escape"){
+        if(e.key == "Escape" && !MoveMenu){
             mainmenu(menu);
         }});
 }

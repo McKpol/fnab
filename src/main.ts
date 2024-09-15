@@ -20,7 +20,7 @@ function gameResize(){
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  settings(menu);
+  settings(menu, 1);
   gameResize();
     window.addEventListener("resize", ()=>{
       gameResize();

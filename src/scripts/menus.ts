@@ -1,25 +1,29 @@
+import { MoveMenu } from "./publicvars";
 export function changeSelected(numbery: number | null = null, numberx: number | null = null, list: (Element | null)[][], code: (Function | null) = null){
+    if(!MoveMenu){ 
     for(const selectedd of list){
-        for (const element of selectedd){
-            element?.classList.remove("selected");  
+            for (const element of selectedd){
+                element?.classList.remove("selected");  
+            }
         }
-    }
-    if(numbery != null){
-        if (numberx == null){
-            numberx = 0;
-        }
-        if (list[numbery].length - 1 < numberx){
-            numberx = 0;
-        }
-        const Element = list[numbery];
-        if (Element[numberx] != null){
-            Element[numberx]!.classList.add("selected")
-        }
-        }
-        if (code!=null){
-            code();
-        }
-    }
+        if(numbery != null){
+            if (numberx == null){
+                numberx = 0;
+            }
+            if (list[numbery].length - 1 < numberx){
+                numberx = 0;
+            }
+            const Element = list[numbery];
+            if (Element[numberx] != null){
+                Element[numberx]!.classList.add("selected")
+            }
+            }
+            if (code!=null){
+                code();
+            }
+    }   
+}
+
 
 export function checkSelected(list: Element[][]): number[] | null{
     let y = 0;
@@ -71,10 +75,10 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
                 const hoveract = hover[y][x];                
 
                 if (hoveract != null){
-                    element?.addEventListener("mouseenter",()=>hoveract())
+                    element?.addEventListener("mouseenter",()=>{if(!MoveMenu){hoveract()}})
                 }
                 if (fnc != null){
-                    element.addEventListener("mousedown", ()=>fnc())
+                    element.addEventListener("mousedown", ()=>{if(!MoveMenu){fnc()}})
                 }
                 x++;
             }
@@ -117,7 +121,6 @@ export function skeleton(HTML: string | null, fncselected: Function, act:(Functi
         } 
         key = checkSelected(selected)
         if (key!=null){
-            console.log("test")
             hoveract([key[0], key[1]])
         }
     })    
