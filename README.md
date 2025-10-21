@@ -1,4 +1,6 @@
-
+> [!WARNING]
+> This repository is no longer being updated.
+> 
 # Unititled game Brateq
 Game created in VITE + TS (FrontEnd)
 Generating executable in Tauri + Rust
